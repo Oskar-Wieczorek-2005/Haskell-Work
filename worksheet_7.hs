@@ -57,7 +57,7 @@ sumValues :: Tree -> Int
 sumValues Null = 0
 sumValues (Node n l r) = n + sumValues l + sumValues r
 
---#1
+-- #1
 data Month = January | February | March | April | May | June
            | July | August | September | October | November | December
     deriving (Eq,Ord,Show,Read)
@@ -65,7 +65,7 @@ data Month = January | February | March | April | May | June
 data Season = Spring | Summer | Autumn | Winter
     deriving (Eq,Ord,Show,Read)
 
---#2
+-- #2
 season :: Month -> (Month, Season)
 season March     = (March, Spring)
 season April     = (April, Spring)
@@ -78,7 +78,7 @@ season October   = (October, Autumn)
 season November  = (November, Autumn)
 season m         = (m, Winter)
 
---#3
+-- #3
 numberOfDays :: Month -> Int -> Int
 numberOfDays February year = 28 + if year `mod` 4 == 0 then 1 else 0
 numberOfDays April _       = 30
@@ -87,41 +87,41 @@ numberOfDays September _   = 30
 numberOfDays November _    = 30
 numberOfDays _ _           = 31
 
---#4
+-- #4
 data Point = Point Float Float
     deriving (Show)
 
---#5
+-- #5
 data PositionedShape = PositionedShape Shape Point
     deriving (Show)
 
---#6
+-- #6
 move :: PositionedShape -> Float -> Float -> PositionedShape
 move (PositionedShape shape (Point x y)) dx dy =
     PositionedShape shape (Point (x + dx) (y + dy))
 
---#7
+-- #7
 numberOfNodes :: Tree -> Int
 numberOfNodes Null = 0
 numberOfNodes (Node _ l r) = 1 + numberOfNodes l + numberOfNodes r
 
---#8
+-- #8
 isMember :: Int -> Tree -> Bool
 isMember _ Null = False
 isMember n (Node m l r) = n == m || isMember n l || isMember n r
 
---#9
+-- #9
 leaves :: Tree -> [Int]
 leaves Null = []
 leaves (Node n Null Null) = [n]
 leaves (Node _ l r) = leaves l ++ leaves r
 
---#10
+-- #10
 inOrder :: Tree -> [Int]
 inOrder Null = []
 inOrder (Node n l r) = inOrder l ++ [n] ++ inOrder r
 
---#11
+-- #11
 insert :: Int -> Tree -> Tree
 insert n Null = Node n Null Null
 insert n (Node m l r)
@@ -129,6 +129,6 @@ insert n (Node m l r)
     | n > m     = Node m l (insert n r)
     | otherwise = Node m l r
 
---#12
+-- #12
 listToSearchTree :: [Int] -> Tree
 listToSearchTree = foldr insert Null
