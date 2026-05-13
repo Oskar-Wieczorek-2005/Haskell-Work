@@ -1,96 +1,84 @@
-import Prelude hiding (fst, snd, tail)
+import Data.Char (isLower)
 
-fst :: (a, b) -> a
-fst (x, _) = x
+data Day = Mon | Tue | Wed | Thu | Fri | Sat | Sun deriving (Eq,Ord,Show)
+data Tree = Null | Node Int Tree Tree deriving (Show)
 
-snd :: (a, b) -> b
-snd (_, y) = y
+-- #1 guards
+absolute :: Int -> Int
+absolute x
+    | x < 0 = -x
+    | otherwise = x
 
-tail :: [a] -> [a]
-tail (_:xs) = xs
+-- #2 guards
+sign :: Int -> Int
+sign x
+    | x < 0 = -1
+    | x == 0 = 0
+    | otherwise = 1
 
--- #1
-headPlusOne :: [Int] -> Int
-headPlusOne []    = -1
-headPlusOne (x:_) = x + 1
+-- #3 pattern matching
+headMaybe :: [Int] -> Int
+headMaybe [] = -1
+headMaybe (x:_) = x
 
--- #2
-duplicateHead :: [a] -> [a]
-duplicateHead []     = []
-duplicateHead (x:xs) = x : x : xs
-
--- #3
-rotate :: [a] -> [a]
-rotate []         = []
-rotate [x]        = [x]
-rotate (x1:x2:xs) = x2 : x1 : xs
-
--- #4
+-- #4 recursion lists
 listLength :: [a] -> Int
-listLength []     = 0
+listLength [] = 0
 listLength (_:xs) = 1 + listLength xs
 
--- #5
-multAll :: [Int] -> Int
-multAll []     = 1
-multAll (x:xs) = x * multAll xs
+-- #5 recursion lists
+sumList :: [Int] -> Int
+sumList [] = 0
+sumList (x:xs) = x + sumList xs
 
--- #6
-andAll :: [Bool] -> Bool
-andAll []     = True
-andAll (x:xs) = x && andAll xs
-
--- #7
-orAll :: [Bool] -> Bool
-orAll []     = False
-orAll (x:xs) = x || orAll xs
-
--- #8
-countIntegers :: Int -> [Int] -> Int
-countIntegers _ [] = 0
-countIntegers n (x:xs)
-  | n == x    = 1 + countIntegers n xs
-  | otherwise = countIntegers n xs
-
--- #9
+-- #6 recursion + guards
 removeAll :: Int -> [Int] -> [Int]
 removeAll _ [] = []
 removeAll n (x:xs)
-  | n == x    = removeAll n xs
-  | otherwise = x : removeAll n xs
+    | n == x = removeAll n xs
+    | otherwise = x : removeAll n xs
 
--- #10
-removeAllButFirst :: Int -> [Int] -> [Int]
-removeAllButFirst _ [] = []
-removeAllButFirst n (x:xs) = x : removeAll n xs
+-- #7 higher order map
+map10 :: [Int] -> [Int]
+map10 = map (*10)
 
--- #11
-type StudentMark = (String, Int)
+-- #8 higher order filter
+onlyLower :: String -> String
+onlyLower = filter isLower
 
-testData :: [StudentMark]
-testData = [("John", 53), ("Sam", 16), ("Kate", 85), ("Jill", 65),
-            ("Bill", 37), ("Amy", 22), ("Jack", 41), ("Sue", 71)]
+-- #9 foldr
+sumSquares :: [Int] -> Int
+sumSquares = foldr (\x acc -> x*x + acc) 0
 
-listMarks :: String -> [StudentMark] -> [Int]
-listMarks _   [] = []
-listMarks stu ((name,mark):xs)
-  | stu == name = mark : listMarks stu xs
-  | otherwise   = listMarks stu xs
+-- #10 list comprehension
+firstSquares :: Int -> [Int]
+firstSquares n = [x*x | x <- [1..n]]
 
--- #12
-sorted :: [Int] -> Bool
-sorted []       = True
-sorted [_]      = True
-sorted (x:y:xs) = x < y && sorted (y:xs)
+-- #11 tuples
+sumDifference :: Int -> Int -> (Int, Int)
+sumDifference x y = (x + y, x - y)
 
--- #13
+-- #12 pattern matching ADT
+isWeekend :: Day -> Bool
+isWeekend Sat = True
+isWeekend Sun = True
+isWeekend _ = False
+
+-- #13 tree recursion
+height :: Tree -> Int
+height Null = 0
+height (Node _ l r) = 1 + max (height l) (height r)
+
+-- #14 BST recursion
+insert :: Int -> Tree -> Tree
+insert n Null = Node n Null Null
+insert n (Node m l r)
+    | n < m = Node m (insert n l) r
+    | n > m = Node m l (insert n r)
+    | otherwise = Node m l r
+
+-- #15 recursion lists
 prefix :: [Int] -> [Int] -> Bool
-prefix []     _      = True
-prefix _      []     = False
+prefix [] _ = True
+prefix _ [] = False
 prefix (x:xs) (y:ys) = x == y && prefix xs ys
-
--- #14
-subSequence :: [Int] -> [Int] -> Bool
-subSequence [] _  = True
-subSequence _  [] = False
-subSequence xs ys = prefix xs ys || subSequence xs (tail ys)
